@@ -11,7 +11,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🇳🇬 Nigerian Job Market Intelligence")
+st.title("Nigerian Job Market Intelligence")
 st.markdown("*Find out what your role pays and what skills you need in the Nigerian job market*")
 st.divider()
 
