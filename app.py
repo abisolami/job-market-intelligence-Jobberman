@@ -137,7 +137,7 @@ with col2:
         filtered['extracted_skills'] = filtered['extracted_skills'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
         # all skills in that role
         all_skills = [skill for sublist in filtered['extracted_skills'].dropna() for skill in sublist]
-        top_skills = pd.Series(all_skills).value_counts().head(8).index.tolist()
+        top_skills = pd.Series(all_skills).value_counts().head(20).index.tolist()
 
         #  ------------------- Top Hiring Company -------------
         top_companies = filtered['company'].value_counts().head(5).index.tolist()
@@ -167,11 +167,12 @@ with col2:
         """, unsafe_allow_html=True)
 
         # companies and demand side by side
+        # companies and demand side by side
         c1, c2 = st.columns(2)
         with c1:
             companies_text = "<br>".join([f"• {c}" for c in top_companies])
             st.markdown(f"""
-            <div style="background:#111827; border-radius:12px; padding:20px; height:180px;">
+            <div style="background:#111827; border-radius:12px; padding:20px; min-height:200px;">
                 <p style="color:#00d4aa; font-size:13px; letter-spacing:2px; margin-bottom:12px;">TOP HIRING COMPANIES</p>
                 <p style="color:white; font-size:13px; line-height:2;">{companies_text}</p>
             </div>
@@ -179,10 +180,28 @@ with col2:
 
         with c2:
             st.markdown(f"""
-            <div style="background:#111827; border-radius:12px; padding:20px; height:180px; text-align:center;">
-                <p style="color:#00d4aa; font-size:13px; letter-spacing:2px; margin-bottom:12px;"> MARKET DEMAND</p>
+            <div style="background:#111827; border-radius:12px; padding:20px; min-height:200px; text-align:center;">
+                <p style="color:#00d4aa; font-size:13px; letter-spacing:2px; margin-bottom:12px;">MARKET DEMAND</p>
                 <h1 style="color:{demand_color}; font-size:48px; margin:10px 0;">{demand}</h1>
                 <p style="color:{demand_color}; font-size:13px;">{demand_label}</p>
                 <p style="color:#888; font-size:11px;">active listings on Jobberman</p>
             </div>
             """, unsafe_allow_html=True)
+
+        # ------------------- Salary Breakdown — full width ---------------
+        salary_dist = filtered['salary_range'].value_counts().head(3)
+        salary_rows = "".join([f'<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #1e3a5f;"><span style="color:white; font-size:14px;">• {salary}</span><span style="color:#00d4aa; font-size:14px; font-weight:bold;">{count} listings</span></div>' for salary, count in salary_dist.items()])
+        
+        st.markdown(f"""
+        <div style="background:#111827; border-radius:12px; padding:25px; margin-top:15px;">
+            <p style="color:#00d4aa; font-size:13px; letter-spacing:2px; margin-bottom:15px;">COMMON SALARY RANGES POSTED</p>
+            {salary_rows}
+        </div>
+        """, unsafe_allow_html=True)
+
+        # ------------------- Footer ---------------
+        st.markdown("""
+        <div style="text-align:center; margin-top:40px;">
+            <p style="color:#444; font-size:12px;">Data scraped from Jobberman.com · Built by Abisolami</p>
+        </div>
+        """, unsafe_allow_html=True)
